@@ -1,1 +1,1 @@
-# Laboratorio2-Convoluci-n-correlaci-n-y-transformaci-n
+# Laboratorio 2 Convolucion,correlacion y transformacinn

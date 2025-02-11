@@ -26,7 +26,10 @@ Para ejecutar este código en tu computadora, necesitas instalar lo siguiente:
 
 # Procedimiento
 
-# *1. Instalacion librerias*
+# *1. Instalacion librerias y Explicacion del codigo*
+
+Para instalar las librerias copia lo siguiente en la terminal 
+
 ``` python
 pip install numpy matplotlib wfdb
 ```

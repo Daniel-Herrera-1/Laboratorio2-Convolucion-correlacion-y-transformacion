@@ -1,6 +1,46 @@
 # Laboratorio 2 Convolución,correlación y transformación
 
-Este repositorio contiene un script de Python (`main.py`) que realiza diversas operaciones estadisticas de procesamiento de señales: convolución, correlación y análisis de señales fisiológicas, en este caso de una electromiografia.
+### Este repositorio contiene un script de Python (`main.py`) que realiza diversas operaciones estadisticas de procesamiento de señales: convolución, correlación y análisis de señales fisiológicas, en este caso de una electromiografia.
+## Objetivos
+● Reconocer la convolución como una operación entre señal y sistema
+
+● Reconocer la correlación como una operación entre señales
+
+● Reconocer la transformada como herramienta de análisis en el dominio de lafrecuencia.
+
+## Requisitos
+
+Para ejecutar este código en tu computadora, necesitas instalar lo siguiente:
+
+- Python 3.x (versión recomendada 3.9 o superior)
+  
+- Bibliotecas:
+```
+   wfdb: Para leer archivos de PhysioNet.
+
+    matplotlib: Para crear gráficos.
+
+    numpy: Para realizar operaciones numéricas.
+```
+  - Datos de PhysioNet: Para el análisis de señales,  descarga una señal desde PhysioNet (electromiografia) .
+
+# Procedimiento
+
+# *1. Instalacion librerias*
+``` python
+pip install numpy matplotlib wfdb
+```
+## Crear un archivo en python con las siguiente lineas para el uso de las librerias
+``` python
+ import numpy as np  # Para cálculos matemáticos y manipulación de matrices
+import matplotlib.pyplot as plt  # Para graficar los resultados
+import wfdb  # Para leer señales desde PhysioNet
+```
+- **numpy (np):** Biblioteca utilizada para trabajar con arreglos de números y realizar cálculos matemáticos avanzados de manera eficiente.
+
+- **matplotlib.pyplot (plt):** Herramienta para generar gráficos que permiten visualizar datos de forma clara.
+
+- **wfdb:** Biblioteca utilizada para leer y procesar señales fisiológicas desde PhysioNet.
 
 ## Contenido
 

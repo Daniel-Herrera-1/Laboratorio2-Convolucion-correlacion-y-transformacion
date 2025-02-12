@@ -135,11 +135,13 @@ for nombre, datos in estudiantes.items():
 - Se muestra el resultado usando **plt.stem()**, que es una forma de graficar señales discretas con líneas verticales.
 
 ### **Grafica 1**
-  ![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Convo1.jpeg)
+![image](https://github.com/user-attachments/assets/44deb2df-cb75-4a13-9f0b-d84c6b899745)
+
 
 ### **Grafica 2**
 
-![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Convo2.jpeg)
+![image](https://github.com/user-attachments/assets/e0d15272-3628-4b4b-82d7-4484ab4471f7)
+
 
 
 ## Correlación Cruzada entre Señales

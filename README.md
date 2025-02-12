@@ -211,34 +211,61 @@ print(record.__dict__)
 ```python
 original_signal = record.p_signal[:,0]  # Extrae la primera señal del archivo
 fs = record.fs  # Obtiene la frecuencia de muestreo
-num_muestras_10s = fs * 10  # Calcula cuántas muestras hay en 10 segundos
-time_10s = np.arange(num_muestras_10s) / fs  # Crea un vector de tiempo para los primeros 10 segundos
+num_muestras_60s = fs * 60  # Calcula cuántas muestras hay en 60 segundos
+time_60s = np.arange(num_muestras_60s) / fs  # Crea un vector de tiempo para los primeros 60 segundos
 
-contador = 0
-for x in time_10s:
-    contador += 1
-n = contador  # Almacena el número total de muestras
-
-suma_cuadrados_diferencias = 0
-for x in original_signal:
-    suma_cuadrados_diferencias += (x - mean_signal) ** 2
-varianza = suma_cuadrados_diferencias / (n-1)  # Calcula la varianza de la señal
-std_signal = varianza ** 0.5  # Calcula la desviación estándar de la señal
-cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
+plt.figure(figsize=(12,4))
+plt.plot(time_60s, original_signal[:num_muestras_60s], label='señal original')
+plt.grid()
+plt.title('Señal fisiológica (s01)')
+plt.xlabel('Tiempo[s]')
+plt.ylabel('Amplitud[mV]')
 ```
 - **record.p_signal[:,0]:** Extrae la primera señal del archivo, ya que puede haber múltiples canales de datos.
 
 - **record.fs:** Obtiene la frecuencia de muestreo, que indica cuántas mediciones por segundo se registraron.
 
-- **num_muestras_10s = fs * 10:** Calcula la cantidad de muestras que hay en los primeros 10 segundos de la señal.
+- **num_muestras_60s = fs * 60:** Calcula la cantidad de muestras que hay en los primeros 60 segundos de la señal.
 
-- **np.arange(num_muestras_10s) / fs:** Crea una lista de valores de tiempo, que representa los primeros 10 segundos de la señal.
-- **Se cuenta cuántos valores hay en time_10s** para obtener la cantidad total de muestras disponibles en los primeros 10 segundos.
-- **Se calcula** la varianza de la señal sumando el cuadrado de las diferencias entre cada valor y la media.
+- **np.arange(num_muestras_60s) / fs:** Crea una lista de valores de tiempo, que representa los primeros 60 segundos de la señal.
 
- - La desviación estándar se obtiene tomando la raíz cuadrada de la varianza.
+- Se grafica la señal original en los primeros 60 segundos.
 
- - El coeficiente de variación se obtiene dividiendo la desviación estándar entre la media, lo que indica cuánta variabilidad tiene la señal.
+- **plt.plot(time_60s, original_signal[:num_muestras_60s]):** Dibuja la señal en función del tiempo.
+
+- Se agregan etiquetas a los ejes y título al gráfico para mejor interpretación
+
+  ![image](https://github.com/user-attachments/assets/b83a5d7f-ac77-4518-bd55-cdf56312aa2c)
+
+## **Historigrama**
+
+```python
+num_muestras_10s = fs * 10
+time_10s = np.arange(num_muestras_10s)/fs  # Solo se toman los primeros 10 segundos ( Se puede cambiar el valor del tiempo, en este caso se puede usar 60)
+
+contador = 0
+for x in time_10s:
+        contador += 1
+n = contador  # Almacena el número total de muestras
+
+sum_signal = sum(original_signal)
+mean_signal = sum_signal / n  # Calcula la media de la señal
+
+suma_cuadrados_diferencias = sum((x - mean_signal) ** 2 for x in original_signal)
+varianza = suma_cuadrados_diferencias / (n-1)  # Calcula la varianza de la señal
+std_signal = varianza ** 0.5  # Calcula la desviación estándar de la señal
+cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
+```
+*Explicacion en orden*
+
+- Se cuenta cuántos valores hay en time_10s para obtener la cantidad total de muestras en 10 segundos.
+- Se calcula la media de la señal sumando todos sus valores y dividiendo entre la cantidad total de muestras n.
+- Se calcula la varianza, la desviación estándar y el coeficiente de variación de la señal.
+
+## **Luego se grafica el Histograma con las funciones de matplotlib como los anteriores graficas**
+
+![image](https://github.com/user-attachments/assets/2fd58951-d063-466e-9d81-042a327d2b18)
+
   
 
 
@@ -251,33 +278,3 @@ cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
 
 
 
-## Contenido
-
-El script `main.py` realiza las siguientes tareas:
-
-1. **Convolución:**
-   - Calcula la convolución entre la señal del código del estudiante (`h[n]`) y la señal de su número de cédula (`x[n]`) para dos estudiantes.
-   - Implementa la convolución de forma manual usando sumatorias.
-   - Genera gráficos de la señal resultante de la convolución para cada estudiante.
-
-2. **Correlación:**
-   - Calcula la correlación cruzada entre dos señales sinusoidales (`x1[n]` y `x2[n]`).
-   - Genera un gráfico de la correlación cruzada.
-   - Imprime la secuencia de la correlación cruzada.
-
-3. **Análisis de Señal Fisiológica:**
-   - Muestra estadísticos descriptivos de la señal en el dominio del tiempo (media, desviación estándar, coeficiente de variación).
-   - Muestra un histograma de la señal.
-   - Aplica la transformada de Fourier a la señal.
-   - Grafica el espectro de magnitud  de la señal.
-   - Calcula y muestra estadísticos descriptivos de la señal en el dominio de la frecuencia.
-
-## Uso
-
-1. **Requisitos:**
-   - Python 3
-   - Librerías: NumPy, Matplotlib, wfdb
-
-   Puedes instalar las librerías usando `pip`:
-   ```bash
-   pip install numpy matplotlib wfdb

@@ -100,12 +100,12 @@ print("Estadisticos descriptivos")
 print(record.__dict__)
 original_signal = record.p_signal[:,0] #canal único
 fs = record.fs
-num_muestras_10s = fs*10
-time_10s = np.arange(num_muestras_10s)/fs #solo se toman los 10 primeros segundos
-#def contador_len(time_10s):
+num_muestras_60s = fs*60
+time_60s = np.arange(num_muestras_60s)/fs #solo se toman los 60 primeros segundos
+
 contador = 0
 
-for x in time_10s:
+for x in time_60s:
         contador += 1
 
 n = contador
@@ -136,7 +136,7 @@ print(f"Coeficiente de variación: {cv_signal}")
 
 
 
-transformada_senal = np.fft.fft(time_60s)
+transformada_senal = np.fft.fft(original_signal)
 
 frecuencias = np.fft.fftfreq(n, d=1/fs)
 
@@ -154,7 +154,7 @@ plt.grid()
 plt.show()
 
 # Cálculo del espectro usando FFT NORMALIZADO
-N = len(time_60s)  # Número de muestras
+N = len(original_signal)  # Número de muestras
 frequencies = np.fft.fftfreq(N, 1/fs)
 spectrum = np.fft.fft(original_signal) / N  # Normalización por el número de muestras
 magnitude = 2 * np.abs(spectrum[:N//2])  # Se toma la mitad del espectro y se ajusta la amplitud
@@ -171,7 +171,7 @@ plt.show()
 # Tomamos el valor absoluto de la transformada para obtener la magnitud de cada componente.
 
 plt.figure(figsize=(10, 6))  # Ajustar el tamaño de la figura (opcional)
-plt.plot(frecuencias, np.abs(transformada_senal))
+plt.plot(frequencies, np.abs(transformada_senal))
 plt.xlabel('Frecuencia (Hz)')
 plt.ylabel('Magnitud')
 plt.title('Espectro de Magnitud de la Señal')
@@ -180,7 +180,17 @@ plt.show()
 
 # Calcular la densidad espectral de potencia
 
+psd = np.abs(spectrum)**2 / N
 
+
+# Graficar la densidad espectral
+plt.figure(figsize=(10, 6))
+plt.plot(frequencies[:N//2], psd[:N//2])
+plt.xlabel('Frecuencia (Hz)')
+plt.ylabel('Densidad espectral de potencia')
+plt.title('Densidad espectral de la señal de EMG')
+plt.grid()
+plt.show()
 
 sum_senal = 0
 for x in transformada_senal:

@@ -191,7 +191,8 @@ plt.title('Correlación Cruzada entre x1[n] y x2[n]')
 plt.grid(True)
 plt.show()
 ```
-![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Correlacion1.jpeg)
+![image](https://github.com/user-attachments/assets/6add12de-b49b-4cae-86f9-bff03b7f7715)
+
 
 ## Análisis de una Señal Biomédica desde PhysioNet 
 
@@ -393,7 +394,10 @@ Coeficiente de variación en frecuencia: (-23005.69584006315-2.070692810445543e-
 ````
 
 
+## Licencia Universidad Militar Nueva Granada https://physionet.org/content/cudb/1.0.0/
 
+**est.daniela.herreraa@unimilitar.edu.co**
+**est.juan.ortiz4@unimilitar.edu.co**
 
 
 

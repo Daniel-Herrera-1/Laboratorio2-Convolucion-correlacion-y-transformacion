@@ -142,6 +142,41 @@ for nombre, datos in estudiantes.items():
 ![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Convo2.jpeg)
 
 
+## Correlación Cruzada entre Señales
+
+```python
+ts = 1.25e-3  # Intervalo de muestreo en segundos
+ns = 9  # Número total de muestras
+
+n = np.arange(ns)  # Crea una lista con valores de 0 a ns-1
+x1 = np.cos(2 * np.pi * n * 100 * ts)  # Señal coseno con frecuencia de 100 Hz
+x2 = np.sin(2 * np.pi * n * 100 * ts)  # Señal seno con frecuencia de 100 Hz
+m = np.arange(-ns+1, ns)  # Rango de desplazamiento para la correlación
+RX1X2 = np.correlate(x1, x2, mode='full')  # Calcula la correlación cruzada
+````
+- **ts** es el período de muestreo, es decir, cada cuánto se toma una muestra.
+
+- **n = np.arange(ns):** Crea una lista con valores de 0 a ns-1.
+
+- **x1 = np.cos(2 * np.pi * n * 100 * ts):** Genera una señal de coseno con frecuencia de 100 Hz.
+
+- **x2 = np.sin(2 * np.pi * n * 100 * ts):** Genera una señal de seno con la misma frecuencia.
+
+- **np.correlate(x1, x2, mode='full'):** Calcula la correlación cruzada entre **x1** y **x2**, comparando cuánto se parecen las señales al desplazarlas en el tiempo.
+
+## Grafico de Correlacion Cruzada
+*Usando las funciones de matplotlib se grafica
+```python
+plt.figure(figsize=(10, 6))
+plt.stem(m, RX1X2)
+plt.xlabel('Desplazamiento (m)')
+plt.ylabel('Correlación Cruzada (Rx1x2[m])')
+plt.title('Correlación Cruzada entre x1[n] y x2[n]')
+plt.grid(True)
+plt.show()
+```
+![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Correlacion1.jpeg)
+
 
 
 ## Contenido

@@ -164,8 +164,22 @@ RX1X2 = np.correlate(x1, x2, mode='full')  # Calcula la correlación cruzada
 
 - **np.correlate(x1, x2, mode='full'):** Calcula la correlación cruzada entre **x1** y **x2**, comparando cuánto se parecen las señales al desplazarlas en el tiempo.
 
+```python
+print("Relacion secuencial de la correlacion cruzada:")
+for i, val in enumerate(RX1X2):
+    print(f"RX1X2[{m[i]}] = {val:.3f}")
+```
+
+- Se imprimen los valores de la correlación cruzada de manera ordenada.
+
+- **for i, val in enumerate(RX1X2):** Se recorre cada valor en RX1X2 y se muestra junto con su desplazamiento correspondiente m[i].
+
+- **print(f"RX1X2[{m[i]}] = {val:.3f}"):** Muestra los valores con tres decimales para mayor claridad
+
+  
 ## Grafico de Correlacion Cruzada
-*Usando las funciones de matplotlib se grafica
+*Usando las funciones de matplotlib se grafica*
+
 ```python
 plt.figure(figsize=(10, 6))
 plt.stem(m, RX1X2)
@@ -176,6 +190,64 @@ plt.grid(True)
 plt.show()
 ```
 ![](https://github.com/Daniel-Herrera-1/Laboratorio2-Convolucion-correlacion-y-transformacion/blob/main/Imagenes/Correlacion1.jpeg)
+
+## Análisis de una Señal Biomédica desde PhysioNet 
+
+*En este caso se esta usando una señal de electromiografia*
+
+```python
+record = wfdb.rdrecord('S01')  # Carga una señal desde un archivo en PhysioNet
+print("Estadísticos descriptivos")
+print(record.__dict__)
+```
+
+- wfdb.rdrecord('S01'): Carga la señal desde un archivo en PhysioNet, identificado como 'S01'.
+
+- El archivo contiene datos biomédicos, como señales de electrocardiogramas u otras mediciones fisiológicas.
+- record.__dict__: Muestra toda la información contenida en la señal, como la frecuencia de muestreo, duración y otros detalles.
+
+## **Siguiente parte**
+
+```python
+original_signal = record.p_signal[:,0]  # Extrae la primera señal del archivo
+fs = record.fs  # Obtiene la frecuencia de muestreo
+num_muestras_10s = fs * 10  # Calcula cuántas muestras hay en 10 segundos
+time_10s = np.arange(num_muestras_10s) / fs  # Crea un vector de tiempo para los primeros 10 segundos
+
+contador = 0
+for x in time_10s:
+    contador += 1
+n = contador  # Almacena el número total de muestras
+
+suma_cuadrados_diferencias = 0
+for x in original_signal:
+    suma_cuadrados_diferencias += (x - mean_signal) ** 2
+varianza = suma_cuadrados_diferencias / (n-1)  # Calcula la varianza de la señal
+std_signal = varianza ** 0.5  # Calcula la desviación estándar de la señal
+cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
+```
+- **record.p_signal[:,0]:** Extrae la primera señal del archivo, ya que puede haber múltiples canales de datos.
+
+- **record.fs:** Obtiene la frecuencia de muestreo, que indica cuántas mediciones por segundo se registraron.
+
+- **num_muestras_10s = fs * 10:** Calcula la cantidad de muestras que hay en los primeros 10 segundos de la señal.
+
+- **np.arange(num_muestras_10s) / fs:** Crea una lista de valores de tiempo, que representa los primeros 10 segundos de la señal.
+- **Se cuenta cuántos valores hay en time_10s** para obtener la cantidad total de muestras disponibles en los primeros 10 segundos.
+- **Se calcula** la varianza de la señal sumando el cuadrado de las diferencias entre cada valor y la media.
+
+ - La desviación estándar se obtiene tomando la raíz cuadrada de la varianza.
+
+ - El coeficiente de variación se obtiene dividiendo la desviación estándar entre la media, lo que indica cuánta variabilidad tiene la señal.
+  
+
+
+
+
+
+
+
+
 
 
 

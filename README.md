@@ -240,11 +240,11 @@ plt.ylabel('Amplitud[mV]')
 ## **Historigrama**
 
 ```python
-num_muestras_10s = fs * 10
-time_10s = np.arange(num_muestras_10s)/fs  # Solo se toman los primeros 10 segundos ( Se puede cambiar el valor del tiempo, en este caso se puede usar 60)
+num_muestras_60s = fs * 60
+time_60s = np.arange(num_muestras_60s)/fs  # Solo se toman los primeros 60 segundos ( Se puede cambiar el valor del tiempo)
 
 contador = 0
-for x in time_10s:
+for x in time_60s:
         contador += 1
 n = contador  # Almacena el número total de muestras
 
@@ -255,6 +255,11 @@ suma_cuadrados_diferencias = sum((x - mean_signal) ** 2 for x in original_signal
 varianza = suma_cuadrados_diferencias / (n-1)  # Calcula la varianza de la señal
 std_signal = varianza ** 0.5  # Calcula la desviación estándar de la señal
 cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
+
+Media:491090.0863371477
+Desviación estándar: 2626379.3668135363
+Coeficiente de variación: 5.348060243697223
+
 ```
 *Explicacion en orden*
 
@@ -266,11 +271,124 @@ cv_signal = std_signal / mean_signal  # Calcula el coeficiente de variación
 
 ![image](https://github.com/user-attachments/assets/2fd58951-d063-466e-9d81-042a327d2b18)
 
+
+## **Transformada de Fourier y Espectro de Frecuencia**
+
+```python
+transformada_senal = np.fft.fft(time_60s)
+frecuencias = np.fft.fftfreq(n, d=1/fs)
+```
+- **np.fft.fft(time_60s):** Aplica la Transformada Rápida de Fourier (FFT) a la señal en el dominio del tiempo para convertirla al dominio de la frecuencia.
+
+- **np.fft.fftfreq(n, d=1/fs):** Calcula las frecuencias asociadas a la transformada, donde n es el número total de muestras y fs es la frecuencia de muestreo.
+
+### Cálculo del espectro usando FFT
+```python
+frequencies = np.fft.fftfreq(len(time_60s), 1/fs)
+spectrum = np.fft.fft(original_signal)
+magnitude = np.abs(spectrum)[:len(frequencies)//2]  # Magnitud del espectro
+```
+
+- **np.fft.fft(original_signal):** Calcula la FFT de la señal original para obtener su contenido en frecuencia.
+
+- **np.abs(spectrum)[:len(frequencies)//2]:** Obtiene la magnitud del espectro y solo se considera la mitad de los valores, ya que la FFT es simétrica para señales reales.
+
+## Grafica del espectro de la señal
+
+![image](https://github.com/user-attachments/assets/22e3cbad-0082-48c8-9066-68d210aff442)
+
+## Grafica del espectro de la señal normalizado
+
+ Cálculo del espectro usando FFT NORMALIZADO
+```python
+N = len(time_60s)  # Número de muestras
+frequencies = np.fft.fftfreq(N, 1/fs)
+spectrum = np.fft.fft(original_signal) / N  # Normalización por el número de muestras
+magnitude = 2 * np.abs(spectrum[:N//2])  # Se toma la mitad del espectro y se ajusta la amplitud
+```
+- **N = len(time_60s):** Calcula el número total de muestras de la señal.
+
+- **np.fft.fft(original_signal) / N:** Normaliza la FFT dividiendo por el número de muestras para obtener valores más representativos.
+
+- **2 * np.abs(spectrum[:N//2]):** Multiplica por 2 para compensar la pérdida de información en la parte negativa del espectro y toma solo la mitad del espectro positivo.
+
+  ![image](https://github.com/user-attachments/assets/117a8da3-3283-47b3-bb90-cc6761a94c41)
+
+  ## **Grafica del espectro de la magnitud**
+```python
+  transformada_senal = np.fft.fft(time_60s)
+frecuencias = np.fft.fftfreq(n, d=1/fs)
+plt.figure(figsize=(10, 6))  # Ajustar el tamaño de la figura (opcional)
+plt.plot(frecuencias, np.abs(transformada_senal))
+plt.xlabel('Frecuencia (Hz)')
+plt.ylabel('Magnitud')
+plt.title('Espectro de Magnitud de la Señal')
+plt.grid()
+plt.show()
+```
+- **np.abs(transformada_senal): Toma el valor absoluto de la transformada para obtener la magnitud de cada componente de frecuencia.**
+
+## **Se grafica el espectro de magnitud para visualizar la distribución de las frecuencias en la señal.**
+
+![image](https://github.com/user-attachments/assets/5d62f92f-4627-497c-aa39-e2d19d93e02f)
+
+
+## Calculo de la densidad espectral de potencia y calculos 
+
+```python
+psd = np.abs(spectrum)**2 / N
+
+plt.figure(figsize=(10, 6))
+plt.plot(frequencies[:N//2], psd[:N//2])
+plt.xlabel('Frecuencia (Hz)')
+plt.ylabel('Densidad espectral de potencia')
+plt.title('Densidad espectral de la señal de EMG')
+plt.grid()
+plt.show()
+````
+
+- np.abs(spectrum)**2 / N: Calcula la densidad espectral de potencia (PSD), que muestra cómo se distribuye la energía de la señal en el dominio de la frecuencia.
+- Se grafica la densidad espectral de potencia (PSD) para analizar la distribución de energía en función de la frecuencia.
+- Se usa plt.plot(frequencies[:N//2], psd[:N//2]) para mostrar solo la mitad del espectro, ya que para señales reales, la PSD es simétrica.
+
+  ![image](https://github.com/user-attachments/assets/9d8e3507-190c-4ec8-8602-1e315130be5e)
+
+  ## **Calculos estadisticos**
+
   
+```python
+  sum_senal = 0
+for x in transformada_senal:
+    sum_senal += x
+mean_senal = sum_senal / n  # Media de la señal en el dominio de la frecuencia
 
+suma_cuadrados_diferencias = 0
+for x in transformada_senal:
+    suma_cuadrados_diferencias += (x - mean_senal) ** 2
+varianza = suma_cuadrados_diferencias / (n-1)  # Cálculo de la varianza
+std_senal = varianza ** 0.5  # Desviación estándar de la señal en frecuencia
+cv_senal = std_senal / mean_senal  # Coeficiente de variación
+```
 
+- Se calcula la varianza sumando los cuadrados de las diferencias entre cada valor y la media.
 
+- La desviación estándar se obtiene tomando la raíz cuadrada de la varianza.
 
+- El coeficiente de variación (cv_senal) es la relación entre la desviación estándar y la media, lo que indica la dispersión relativa de la señal en frecuencia.
+
+## **Mostrar los valores estadisticos obtenidos con print**
+
+ ```python 
+print("\n")
+print(f"Media en frecuencia: {mean_senal}")
+print(f"Desviación estándar en frecuencia: {std_senal}")
+print(f"Coeficiente de variación en frecuencia: {cv_senal}")
+
+Media en frecuencia:(-2938.924852566685+2.64681875705719e-10j)
+Desviación estándar en frecuencia: (67612011.25495158-3.580164213609727e-09j)
+Coeficiente de variación en frecuencia: (-23005.69584006315-2.070692810445543e-09j)
+
+````
 
 
 

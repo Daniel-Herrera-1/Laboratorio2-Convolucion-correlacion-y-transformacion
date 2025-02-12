@@ -78,12 +78,28 @@ for i, val in enumerate(RX1X2):
 # frecuencia:   • Frecuencia media, • Frecuencia mediana, • Desviación estándar, • Histograma de frecuencias
 
 import wfdb
-record = wfdb.rdrecord('cu01')
+record = wfdb.rdrecord('s01')
+
+print("Información del registro")
+print(record.__dict__)
+original_signal = record.p_signal[:,0] #asumiendo que es un canal único
+fs = record.fs #frecuencia de muestreo
+num_muestras_60s = fs*60
+time_60s = np.arange(num_muestras_60s)/fs #solo se toman los 60 primeros segundos
+#time = np.arange(len(original_signal))/fs  #eje de tiempo
+
+plt.figure(figsize=(12,4))
+plt.plot(time_60s, original_signal[:num_muestras_60s], label='señal original')
+plt.grid()
+plt.title('señal fisiologica (cu01)')
+plt.xlabel('Tiempo[s]')
+plt.ylabel('Amplitud[mV]')
+
 
 print("Estadisticos descriptivos")
 print(record.__dict__)
 original_signal = record.p_signal[:,0] #canal único
-fs = record.fs 
+fs = record.fs
 num_muestras_10s = fs*10
 time_10s = np.arange(num_muestras_10s)/fs #solo se toman los 10 primeros segundos
 #def contador_len(time_10s):
@@ -113,15 +129,43 @@ plt.ylabel('Frecuencia')
 plt.grid()
 plt.show()
 
+print("\n")
 print(f"Media:{mean_signal}")
 print(f"Desviación estándar: {std_signal}")
 print(f"Coeficiente de variación: {cv_signal}")
 
 
 
-transformada_senal = np.fft.fft(time_10s)
+transformada_senal = np.fft.fft(time_60s)
 
 frecuencias = np.fft.fftfreq(n, d=1/fs)
+
+# Cálculo del espectro usando FFT
+frequencies = np.fft.fftfreq(len(time_60s), 1/fs)
+spectrum = np.fft.fft(original_signal)
+magnitude = np.abs(spectrum)[:len(frequencies)//2]  # Magnitud del espectro
+
+# Gráfica del espectro
+plt.plot(frequencies[:len(frequencies)//2], magnitude)
+plt.xlabel('Frecuencia (Hz)')
+plt.ylabel('Magnitud')
+plt.title('Espectro de la señal')
+plt.grid()
+plt.show()
+
+# Cálculo del espectro usando FFT NORMALIZADO
+N = len(time_60s)  # Número de muestras
+frequencies = np.fft.fftfreq(N, 1/fs)
+spectrum = np.fft.fft(original_signal) / N  # Normalización por el número de muestras
+magnitude = 2 * np.abs(spectrum[:N//2])  # Se toma la mitad del espectro y se ajusta la amplitud
+
+# Gráfica del espectro
+plt.plot(frequencies[:N//2], magnitude)
+plt.xlabel('Frecuencia (Hz)')
+plt.ylabel('Magnitud')
+plt.title('Espectro de la señal normalizado')
+plt.grid()
+plt.show()
 
 # 4. Graficar el espectro de magnitud
 # Tomamos el valor absoluto de la transformada para obtener la magnitud de cada componente.
@@ -134,16 +178,9 @@ plt.title('Espectro de Magnitud de la Señal')
 plt.grid()
 plt.show()
 
-# 5. Graficar el espectro de fase
+# Calcular la densidad espectral de potencia
 
-plt.figure(figsize=(10, 6))
-plt.plot(frecuencias, np.angle(transformada_senal))
-plt.xlabel('Frecuencia (Hz)')
-plt.ylabel('Fase (radianes)')
-plt.title('Espectro de Fase de la Señal')
-plt.grid()
-plt.xlim(0, frecuencias.max())
-plt.show()
+
 
 sum_senal = 0
 for x in transformada_senal:
@@ -156,7 +193,7 @@ varianza = suma_cuadrados_diferencias / (n-1)
 std_senal = varianza**0.5
 cv_senal = std_senal / mean_senal
 
-
+print("\n")
 print(f"Media en frecuencia:{mean_senal}")
 print(f"Desviación estándar en frecuencia: {std_senal}")
 print(f"Coeficiente de variación en frecuencia: {cv_senal}")
